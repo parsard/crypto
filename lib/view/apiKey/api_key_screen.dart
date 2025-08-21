@@ -32,44 +32,57 @@ class ApiKeyScreen extends StatelessWidget {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(24.0),
-                  child: BlocBuilder<ApiKeyCubit, ApiKeyState>(
-                    builder: (context, state) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const GradientIconContainer(icon: Icons.currency_bitcoin),
-                          const SizedBox(height: 32),
-                          const Text(
-                            'Connect to Nobitex',
-                            style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            'Enter your API key to access real-time\ncrypto data and trading features',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 16, height: 1.5),
-                          ),
-                          const SizedBox(height: 48),
-                          GradientTextField(
-                            label: 'Nobitex API Key',
-                            value: state.apiKey,
-                            hint: 'Enter your API key here',
-                            errorText: state.error,
-                            isObscured: state.isObscured,
-                            onChanged: (v) => context.read<ApiKeyCubit>().apiKeyChanged(v),
-                            onToggleVisibility: () => context.read<ApiKeyCubit>().toggleObscure(),
-                          ),
-                          const SizedBox(height: 32),
-                          GradientButton(
-                            label: 'Save & Continue',
-                            isLoading: state.isLoading,
-                            onPressed: () => context.read<ApiKeyCubit>().submit(),
-                          ),
-                          const SizedBox(height: 24),
-                          HelpTextLink(text: 'Need help getting your API key?', onTap: () => _showHelpDialog(context)),
-                        ],
-                      );
+                  child: BlocListener<ApiKeyCubit, ApiKeyState>(
+                    listenWhen: (prev, curr) => prev.isLoading != curr.isLoading || prev.error != curr.error,
+                    listener: (context, state) {
+                      if (!state.isLoading && state.error == null && state.apiKey.isNotEmpty) {
+                        Navigator.pushReplacementNamed(context, '/market');
+                      }
                     },
+                    child: BlocBuilder<ApiKeyCubit, ApiKeyState>(
+                      builder: (context, state) {
+                        return SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const GradientIconContainer(icon: Icons.currency_bitcoin),
+                              const SizedBox(height: 32),
+                              const Text(
+                                'Connect to Nobitex',
+                                style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                'Enter your API key to access real‑time\ncrypto data and trading features',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 16, height: 1.5),
+                              ),
+                              const SizedBox(height: 48),
+                              GradientTextField(
+                                label: 'Nobitex API Key',
+                                value: state.apiKey,
+                                hint: 'Enter your API key here',
+                                errorText: state.error,
+                                isObscured: state.isObscured,
+                                onChanged: (v) => context.read<ApiKeyCubit>().apiKeyChanged(v),
+                                onToggleVisibility: () => context.read<ApiKeyCubit>().toggleObscure(),
+                              ),
+                              const SizedBox(height: 32),
+                              GradientButton(
+                                label: 'Save & Continue',
+                                isLoading: state.isLoading,
+                                onPressed: () => context.read<ApiKeyCubit>().submit(),
+                              ),
+                              const SizedBox(height: 24),
+                              HelpTextLink(
+                                text: 'Need help getting your API key?',
+                                onTap: () => _showHelpDialog(context),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),

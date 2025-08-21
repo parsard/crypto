@@ -1,3 +1,4 @@
+import 'package:crypto/services/nobitex_service.dart';
 import 'package:crypto/view/apiKey/api_key_screen.dart';
 import 'package:crypto/view/apiKey/logic/api_key_cubit.dart';
 import 'package:crypto/view/market/market_screen.dart';
@@ -16,14 +17,15 @@ class CryptoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final nobitexService = NobitexService();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Crypto Bazar',
+      title: 'Crypto',
       theme: ThemeData(primarySwatch: Colors.blue),
       home: const SplashScreen(),
       routes: {
         '/onboarding': (_) => BlocProvider(create: (_) => OnboardingCubit(), child: const OnboardingScreen()),
-        '/api-key': (_) => BlocProvider(create: (_) => ApiKeyCubit(), child: const ApiKeyScreen()),
+        '/api-key': (_) => BlocProvider(create: (_) => ApiKeyCubit(nobitexService), child: const ApiKeyScreen()),
         '/market': (_) => const MarketScreen(),
       },
     );
