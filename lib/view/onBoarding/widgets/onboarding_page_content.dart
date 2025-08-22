@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'onboarding_icon_glow.dart';
 import 'onboarding_title.dart';
 import 'onboarding_subtitle.dart';
@@ -24,13 +25,13 @@ class OnboardingPageContent extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const SizedBox(height: 80),
+        SizedBox(height: 80.h),
         OnboardingIconGlow(icon: icon, iconColor: iconColor, glowColor: glowColor),
-        const SizedBox(height: 60),
+        SizedBox(height: 60.h),
         OnboardingTitle(title: title),
-        const SizedBox(height: 24),
+        SizedBox(height: 24.h),
         OnboardingSubtitle(subtitle: subtitle),
-        const SizedBox(height: 100),
+        SizedBox(height: 100.h),
       ],
     );
   }

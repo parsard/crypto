@@ -4,6 +4,8 @@ import 'package:crypto/view/splash/widgets/animated_title.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -51,12 +53,12 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                 // Animated Bitcoin Icon with Glow
                 const AnimatedLogo(),
 
-                const SizedBox(height: 40),
+                SizedBox(height: 40.h),
 
                 // Animated App Title
                 const AnimatedTitle(),
 
-                const SizedBox(height: 60),
+                SizedBox(height: 60.h),
 
                 // Loading Indicator
                 const AnimatedSplashLoader(),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OnboardingTitle extends StatelessWidget {
   final String title;
@@ -18,7 +19,7 @@ class OnboardingTitle extends StatelessWidget {
             child: Text(
               title,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold, height: 1.2),
+              style: TextStyle(color: Colors.white, fontSize: 32.sp, fontWeight: FontWeight.bold, height: 1.2.h),
             ),
           ),
         );

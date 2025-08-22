@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class GradientButton extends StatelessWidget {
   final String label;
@@ -14,11 +15,11 @@ class GradientButton extends StatelessWidget {
 
     return SizedBox(
       width: double.infinity,
-      height: 56,
+      height: 56.h,
       child: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(colors: gradientColors),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(20.r),
         ),
         child: ElevatedButton(
           onPressed: isLoading ? null : onPressed,
@@ -31,15 +32,15 @@ class GradientButton extends StatelessWidget {
           ),
           child:
               isLoading
-                  ? const SizedBox(
-                    width: 24,
-                    height: 24,
+                  ? SizedBox(
+                    width: 24.w,
+                    height: 24.h,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                   )
-                  : Text(label, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                  : Text(label, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600)),
         ),
       ),
     );

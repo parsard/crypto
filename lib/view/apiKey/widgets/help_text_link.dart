@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class HelpTextLink extends StatelessWidget {
   final String text;
@@ -14,10 +15,14 @@ class HelpTextLink extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(Icons.help_outline, size: 16, color: Colors.white.withOpacity(0.6)),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.h),
           Text(
             text,
-            style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 14, decoration: TextDecoration.underline),
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.6),
+              fontSize: 14.sp,
+              decoration: TextDecoration.underline,
+            ),
           ),
         ],
       ),

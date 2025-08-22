@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OnboardingSkipButton extends StatelessWidget {
   final VoidCallback onTap;
@@ -10,13 +11,13 @@ class OnboardingSkipButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(25),
-          border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+          borderRadius: BorderRadius.circular(25.r),
+          border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.w),
         ),
-        child: const Text("Skip", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+        child: Text("Skip", style: TextStyle(color: Colors.white, fontSize: 16.sp, fontWeight: FontWeight.w500)),
       ),
     );
   }

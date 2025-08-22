@@ -9,6 +9,7 @@ import 'package:crypto/view/onBoarding/on_boarding_screen.dart';
 import 'package:crypto/view/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 void main() {
@@ -42,25 +43,31 @@ class _CryptoAppState extends State<CryptoApp> {
   @override
   Widget build(BuildContext context) {
     final nobitexService = NobitexService();
-
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Crypto',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const SplashScreen(),
-      routes: {
-        '/onboarding': (_) => BlocProvider(create: (_) => OnboardingCubit(), child: const OnboardingScreen()),
-        '/api-key': (_) => BlocProvider(create: (_) => ApiKeyCubit(nobitexService), child: const ApiKeyScreen()),
-        '/market': (_) {
-          if (_savedToken == null) {
-            // token missing — redirect to api-key screen
-            return BlocProvider(create: (_) => ApiKeyCubit(nobitexService), child: const ApiKeyScreen());
-          }
-          return BlocProvider(
-            create: (_) => MarketCubit(service: nobitexService, token: _savedToken!)..fetchMarketStats(),
-            child: const MarketScreen(),
-          );
-        },
+    return ScreenUtilInit(
+      designSize: const Size(375, 812),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Crypto',
+          theme: ThemeData(primarySwatch: Colors.blue),
+          home: const SplashScreen(),
+          routes: {
+            '/onboarding': (_) => BlocProvider(create: (_) => OnboardingCubit(), child: const OnboardingScreen()),
+            '/api-key': (_) => BlocProvider(create: (_) => ApiKeyCubit(nobitexService), child: const ApiKeyScreen()),
+            '/market': (_) {
+              if (_savedToken == null) {
+                // token missing — redirect to api-key screen
+                return BlocProvider(create: (_) => ApiKeyCubit(nobitexService), child: const ApiKeyScreen());
+              }
+              return BlocProvider(
+                create: (_) => MarketCubit(service: nobitexService, token: _savedToken!)..fetchMarketStats(),
+                child: const MarketScreen(),
+              );
+            },
+          },
+        );
       },
     );
   }

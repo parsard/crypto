@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OnboardingSubtitle extends StatelessWidget {
   final String subtitle;
@@ -16,14 +17,14 @@ class OnboardingSubtitle extends StatelessWidget {
           child: Transform.translate(
             offset: Offset(0, 20 * (1 - value)),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
+              padding: EdgeInsets.symmetric(horizontal: 32.w),
               child: Text(
                 subtitle,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.8),
-                  fontSize: 18,
-                  height: 1.5,
+                  fontSize: 18.sp,
+                  height: 1.5.h,
                   fontWeight: FontWeight.w400,
                 ),
               ),

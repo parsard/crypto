@@ -7,6 +7,7 @@ import 'package:crypto/view/apiKey/widgets/gradient_text_field.dart';
 import 'package:crypto/view/apiKey/widgets/help_text_link.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ApiKeyScreen extends StatelessWidget {
   const ApiKeyScreen({super.key});
@@ -46,18 +47,18 @@ class ApiKeyScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const GradientIconContainer(icon: Icons.currency_bitcoin),
-                              const SizedBox(height: 32),
-                              const Text(
+                              SizedBox(height: 32.h),
+                              Text(
                                 'Connect to Nobitex',
-                                style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+                                style: TextStyle(color: Colors.white, fontSize: 28.sp, fontWeight: FontWeight.bold),
                               ),
-                              const SizedBox(height: 12),
+                              SizedBox(height: 12.h),
                               Text(
                                 'Enter your API key to access real‑time\ncrypto data and trading features',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 16, height: 1.5),
+                                style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 16.sp, height: 1.5),
                               ),
-                              const SizedBox(height: 48),
+                              SizedBox(height: 48.h),
                               GradientTextField(
                                 label: 'Nobitex API Key',
                                 value: state.apiKey,
@@ -67,13 +68,13 @@ class ApiKeyScreen extends StatelessWidget {
                                 onChanged: (v) => context.read<ApiKeyCubit>().apiKeyChanged(v),
                                 onToggleVisibility: () => context.read<ApiKeyCubit>().toggleObscure(),
                               ),
-                              const SizedBox(height: 32),
+                              SizedBox(height: 32.h),
                               GradientButton(
                                 label: 'Save & Continue',
                                 isLoading: state.isLoading,
                                 onPressed: () => context.read<ApiKeyCubit>().submit(),
                               ),
-                              const SizedBox(height: 24),
+                              SizedBox(height: 24.h),
                               HelpTextLink(
                                 text: 'Need help getting your API key?',
                                 onTap: () => _showHelpDialog(context),
@@ -99,7 +100,7 @@ class ApiKeyScreen extends StatelessWidget {
       builder:
           (context) => AlertDialog(
             backgroundColor: const Color(0xFF1A1A2E),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
             title: const Text('How to get API Key?', style: TextStyle(color: Colors.white)),
             content: Text(
               '1. Go to Nobitex website\n'

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AnimatedSplashLoader extends StatefulWidget {
   const AnimatedSplashLoader({Key? key}) : super(key: key);
@@ -7,8 +8,7 @@ class AnimatedSplashLoader extends StatefulWidget {
   _AnimatedSplashLoaderState createState() => _AnimatedSplashLoaderState();
 }
 
-class _AnimatedSplashLoaderState extends State<AnimatedSplashLoader>
-    with TickerProviderStateMixin {
+class _AnimatedSplashLoaderState extends State<AnimatedSplashLoader> with TickerProviderStateMixin {
   late AnimationController _textController;
 
   late Animation<double> _textOpacityAnimation;
@@ -17,18 +17,13 @@ class _AnimatedSplashLoaderState extends State<AnimatedSplashLoader>
   void initState() {
     super.initState();
 
-    _textController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
+    _textController = AnimationController(duration: const Duration(milliseconds: 1200), vsync: this);
 
     // Text animations
-    _textOpacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _textController,
-        curve: const Interval(0.3, 1.0, curve: Curves.easeOut),
-      ),
-    );
+    _textOpacityAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _textController, curve: const Interval(0.3, 1.0, curve: Curves.easeOut)));
     _startAnimations();
   }
 
@@ -54,26 +49,20 @@ class _AnimatedSplashLoaderState extends State<AnimatedSplashLoader>
             children: [
               // Custom Loading Indicator
               SizedBox(
-                width: 40,
-                height: 40,
+                width: 40.w,
+                height: 40.h,
                 child: CircularProgressIndicator(
                   strokeWidth: 3,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    const Color(0xFFFFD700).withOpacity(0.8),
-                  ),
+                  valueColor: AlwaysStoppedAnimation<Color>(const Color(0xFFFFD700).withOpacity(0.8)),
                   backgroundColor: Colors.white.withOpacity(0.1),
                 ),
               ),
 
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
 
               Text(
                 'Loading...',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.white.withOpacity(0.6),
-                  fontWeight: FontWeight.w300,
-                ),
+                style: TextStyle(fontSize: 14.sp, color: Colors.white.withOpacity(0.6), fontWeight: FontWeight.w300),
               ),
             ],
           ),

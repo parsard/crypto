@@ -4,6 +4,7 @@ import 'package:crypto/view/onBoarding/widgets/onboarding_next_button.dart';
 import 'package:crypto/view/onBoarding/widgets/onboarding_page_content.dart';
 import 'package:crypto/view/onBoarding/widgets/onboarding_skip_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,7 +27,7 @@ class OnboardingScreen extends StatelessWidget {
             PageViewModel(
               title: "",
               bodyWidget: const OnboardingPageContent(
-                title: "Welcome to Crypto Bazar",
+                title: "Welcome to Crypto Kade",
                 subtitle: "Track and trade your favorite cryptocurrencies with ease and confidence",
                 icon: Icons.currency_bitcoin,
                 iconColor: Color(0xFFFFD700),
@@ -61,12 +62,12 @@ class OnboardingScreen extends StatelessWidget {
           next: const OnboardingNextButton(),
           done: OnboardingDoneButton(onTap: () => context.read<OnboardingCubit>().completeOnboarding(context)),
           dotsDecorator: DotsDecorator(
-            size: const Size(12, 12),
-            activeSize: const Size(24, 12),
+            size: Size(12.w, 12.h),
+            activeSize: Size(24.w, 12.h),
             activeColor: const Color(0xFFFFD700),
             color: Colors.white.withOpacity(0.3),
-            spacing: const EdgeInsets.symmetric(horizontal: 4),
-            activeShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+            spacing: EdgeInsets.symmetric(horizontal: 4.w),
+            activeShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.r)),
           ),
           globalBackgroundColor: Colors.transparent,
           animationDuration: 300,

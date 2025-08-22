@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AnimatedTitle extends StatefulWidget {
   const AnimatedTitle({Key? key}) : super(key: key);
@@ -7,8 +8,7 @@ class AnimatedTitle extends StatefulWidget {
   _AnimatedTitleState createState() => _AnimatedTitleState();
 }
 
-class _AnimatedTitleState extends State<AnimatedTitle>
-    with TickerProviderStateMixin {
+class _AnimatedTitleState extends State<AnimatedTitle> with TickerProviderStateMixin {
   late AnimationController _textController;
 
   late Animation<double> _textOpacityAnimation;
@@ -19,28 +19,18 @@ class _AnimatedTitleState extends State<AnimatedTitle>
   void initState() {
     super.initState();
 
-    _textController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
+    _textController = AnimationController(duration: const Duration(milliseconds: 1200), vsync: this);
 
     // Text animations
-    _textOpacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _textController,
-        curve: const Interval(0.3, 1.0, curve: Curves.easeOut),
-      ),
-    );
+    _textOpacityAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _textController, curve: const Interval(0.3, 1.0, curve: Curves.easeOut)));
 
     _textSlideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.5),
       end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _textController,
-        curve: const Interval(0.3, 1.0, curve: Curves.easeOut),
-      ),
-    );
+    ).animate(CurvedAnimation(parent: _textController, curve: const Interval(0.3, 1.0, curve: Curves.easeOut)));
 
     _startAnimations();
   }
@@ -71,16 +61,12 @@ class _AnimatedTitleState extends State<AnimatedTitle>
                 ShaderMask(
                   shaderCallback:
                       (bounds) => const LinearGradient(
-                        colors: [
-                          Color(0xFFFFD700),
-                          Color(0xFFFFA500),
-                          Color(0xFFFFD700),
-                        ],
+                        colors: [Color(0xFFFFD700), Color(0xFFFFA500), Color(0xFFFFD700)],
                       ).createShader(bounds),
-                  child: const Text(
-                    'Crypto Bazar',
+                  child: Text(
+                    'Crypto Kade',
                     style: TextStyle(
-                      fontSize: 32,
+                      fontSize: 32.sp,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                       letterSpacing: 1.2,
@@ -88,13 +74,13 @@ class _AnimatedTitleState extends State<AnimatedTitle>
                   ),
                 ),
 
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
 
                 // Subtitle
                 Text(
                   'Your Gateway to Digital Assets',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     color: Colors.white.withOpacity(0.8),
                     fontWeight: FontWeight.w400,
                     letterSpacing: 0.5,

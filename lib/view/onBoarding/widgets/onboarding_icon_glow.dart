@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OnboardingIconGlow extends StatelessWidget {
   final IconData icon;
@@ -16,15 +17,15 @@ class OnboardingIconGlow extends StatelessWidget {
         return Transform.scale(
           scale: 0.8 + (0.2 * value),
           child: Container(
-            width: 140,
-            height: 140,
+            width: 140.w,
+            height: 140.h,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [iconColor, iconColor.withOpacity(0.8)],
               ),
-              borderRadius: BorderRadius.circular(35),
+              borderRadius: BorderRadius.circular(35.r),
               boxShadow: [
                 BoxShadow(color: glowColor.withOpacity(0.4 * value), blurRadius: 30 * value, spreadRadius: 5 * value),
               ],
