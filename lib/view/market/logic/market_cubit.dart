@@ -6,10 +6,14 @@ class MarketCubit extends Cubit<MarketState> {
   final NobitexService service;
   final String token;
 
-  MarketCubit({required this.service, required this.token}) : super(const MarketState());
+  MarketCubit({
+    required this.service,
+    required this.token,
+  }) : super(const MarketState());
 
   Future<void> fetchMarketStats() async {
     emit(state.copyWith(isLoading: true, error: null));
+
     try {
       final data = await service.getMarketStats(
         token: token,
@@ -18,21 +22,31 @@ class MarketCubit extends Cubit<MarketState> {
       );
 
       final stats = data['stats'] as Map<String, dynamic>;
-      final cryptos =
-          stats.entries.map((entry) {
-            final symbol = entry.key.toUpperCase();
-            return {
-              'name': _mapSymbolToName(symbol),
-              'symbol': symbol,
-              'price': '\$${(entry.value['bestSell'] as num).toStringAsFixed(2)}',
 
-              'imageUrl': _cryptoLogo(symbol),
-            };
-          }).toList();
+      final cryptos = stats.entries.map((entry) {
+        final symbol = entry.key.toUpperCase();
 
-      emit(state.copyWith(isLoading: false, cryptos: cryptos));
+        // ورودی API ممکن است String باشد، اینجا آن را به double تبدیل می‌کنیم
+        final bestSell = double.tryParse(
+              entry.value['bestSell'].toString(),
+            ) ??
+            0;
+
+        return {
+          'name': _mapSymbolToName(symbol),
+          'symbol': symbol,
+          'price': bestSell.toStringAsFixed(2),
+          'imageUrl': _cryptoLogo(symbol),
+        };
+      }).toList();
+
+      emit(
+        state.copyWith(isLoading: false, cryptos: cryptos),
+      );
     } catch (e) {
-      emit(state.copyWith(isLoading: false, error: e.toString()));
+      emit(
+        state.copyWith(isLoading: false, error: e.toString()),
+      );
     }
   }
 

@@ -35,7 +35,6 @@ class NobitexService {
     }
   }
 
-  // ✅ FIX: jsonEncode instead of raw Map
   Future<Map<String, dynamic>> getMarketStats({
     required String token,
     required List<String> srcCurrency,

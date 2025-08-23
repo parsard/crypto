@@ -6,6 +6,7 @@ import 'package:crypto_app/view/market/widgets/market_search_bar.dart';
 import 'package:crypto_app/view/market/widgets/section_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MarketScreen extends StatelessWidget {
   const MarketScreen({super.key});
@@ -22,7 +23,12 @@ class MarketScreen extends StatelessWidget {
             }
 
             if (state.error != null) {
-              return Center(child: Text(state.error!, style: const TextStyle(color: Colors.redAccent)));
+              return Center(
+                child: Text(
+                  state.error!,
+                  style: const TextStyle(color: Colors.redAccent),
+                ),
+              );
             }
 
             final suggestions = state.cryptos.where((c) {
@@ -33,14 +39,19 @@ class MarketScreen extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                /// --- Header ---
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         "Market",
-                        style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 28.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       IconButton(
                         icon: const CircleAvatar(
@@ -53,22 +64,25 @@ class MarketScreen extends StatelessWidget {
                   ),
                 ),
 
-                // --- Search Bar ---
+                /// --- Search Bar ---
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: MarketSearchBar(
                     onChanged: (value) {
                       context.read<MarketCubit>().updateSearchQuery(value);
                     },
                   ),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10.h),
 
-                // --- Suggestions ---
+                /// --- Suggestions ---
                 if (state.searchQuery.isNotEmpty)
                   Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 20),
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF1A1A27)),
+                    margin: EdgeInsets.symmetric(horizontal: 20.w),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.r),
+                      color: const Color(0xFF1A1A27),
+                    ),
                     child: Column(
                       children: suggestions.isNotEmpty
                           ? suggestions
@@ -85,44 +99,44 @@ class MarketScreen extends StatelessWidget {
                           : [
                               const Padding(
                                 padding: EdgeInsets.all(12.0),
-                                child: Text('No matches found', style: TextStyle(color: Colors.white54)),
+                                child: Text(
+                                  'No matches found',
+                                  style: TextStyle(color: Colors.white54),
+                                ),
                               ),
                             ],
                     ),
                   ),
 
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
 
-                // --- Crypto Row ---
+                /// --- Crypto Row ---
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: SectionTitle(
                     title: "Top Cryptos",
-                    onSeeAll: () {
-                      /* */
-                    },
+                    onSeeAll: () {},
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
 
-                Expanded(
+                SizedBox(
+                  height: 160, // کنترل ارتفاع برای مربع شدن کارت‌ها
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Row(
-                      children: state.cryptos
-                          .map(
-                            (c) => CryptoCard(
-                              name: c['name']!,
-                              symbol: c['symbol']!,
-                              price: c['price']!,
-                              imageUrl: c['imageUrl']!,
-                              onTap: () {
-                                // navigate to detail page for symbol
-                              },
-                            ),
-                          )
-                          .toList(),
+                      children: state.cryptos.map((c) {
+                        return CryptoCard(
+                          name: c['name']!,
+                          symbol: c['symbol']!,
+                          price: c['price']!,
+                          imageUrl: c['imageUrl']!,
+                          onTap: () {
+                            // navigate to detail page for symbol
+                          },
+                        );
+                      }).toList(),
                     ),
                   ),
                 ),
