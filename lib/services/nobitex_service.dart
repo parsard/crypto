@@ -79,4 +79,12 @@ class NobitexService {
   Future<Map<String, dynamic>> getTicker(String symbol) async {
     return getOrderBook(symbol);
   }
+
+  Future<void> logout(String token) async {
+    final url = Uri.parse('$baseUrl/auth/logout/');
+    final response = await http.post(url, headers: _tokenHeaders(token));
+    if (response.statusCode != 200 && response.statusCode != 401) {
+      throw Exception('Failed to logout: ${response.statusCode} ${response.body}');
+    }
+  }
 }

@@ -5,6 +5,7 @@ import 'package:crypto_app/view/market/widgets/crypto_card.dart';
 import 'package:crypto_app/view/market/widgets/crypto_suggestion.dart';
 import 'package:crypto_app/view/market/widgets/market_search_bar.dart';
 import 'package:crypto_app/view/market/widgets/section_title.dart';
+import 'package:crypto_app/view/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,7 +20,6 @@ class MarketScreen extends StatelessWidget {
       body: SafeArea(
         child: BlocBuilder<MarketCubit, MarketState>(
           builder: (context, state) {
-            // This logic remains unchanged
             if (state.isLoading && state.cryptos.isEmpty) {
               return const Center(child: CircularProgressIndicator());
             }
@@ -33,11 +33,9 @@ class MarketScreen extends StatelessWidget {
               );
             }
 
-            // Filter logic updated to use object properties
             final List<Crypto> suggestions = state.cryptos.where((c) {
               final query = state.searchQuery.toLowerCase();
-              return c.name.toLowerCase().contains(query) || // <-- CHANGED
-                  c.symbol.toLowerCase().contains(query); // <-- CHANGED
+              return c.name.toLowerCase().contains(query) || c.symbol.toLowerCase().contains(query);
             }).toList();
 
             return SingleChildScrollView(
@@ -64,7 +62,9 @@ class MarketScreen extends StatelessWidget {
                             backgroundColor: Colors.grey,
                             child: Icon(Icons.person, color: Colors.white),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ProfileScreenWrapper()));
+                          },
                         ),
                       ],
                     ),
@@ -133,14 +133,14 @@ class MarketScreen extends StatelessWidget {
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
                       itemCount: state.cryptos.length,
                       itemBuilder: (context, index) {
-                        final Crypto c = state.cryptos[index]; // <-- Type is now Crypto
+                        final Crypto c = state.cryptos[index];
                         return Padding(
                           padding: EdgeInsets.symmetric(horizontal: 4.w),
                           child: CryptoCard(
-                            name: c.name, // <-- CHANGED
-                            symbol: c.symbol, // <-- CHANGED
-                            price: c.formattedPrice, // <-- CHANGED & USING GETTER!
-                            imageUrl: c.imageUrl, // <-- CHANGED
+                            name: c.name,
+                            symbol: c.symbol,
+                            price: c.formattedPrice,
+                            imageUrl: c.imageUrl,
                             onTap: () {},
                           ),
                         );

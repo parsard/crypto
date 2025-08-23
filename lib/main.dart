@@ -17,7 +17,7 @@ import 'package:crypto_app/core/animations.dart';
 void main() {
   runApp(
     BlocProvider(
-      create: (_) => AuthCubit()..checkAuth(),
+      create: (_) => AuthCubit(nobitexService: NobitexService())..checkAuth(),
       child: const CryptoApp(),
     ),
   );
