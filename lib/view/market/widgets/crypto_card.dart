@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CryptoCard extends StatelessWidget {
   final String name;
@@ -21,7 +22,7 @@ class CryptoCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 120,
+        width: 100.w,
         margin: const EdgeInsets.only(right: 12),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
@@ -42,7 +43,7 @@ class CryptoCard extends StatelessWidget {
             const SizedBox(height: 4),
             Text(symbol.toUpperCase(), style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 12)),
             const SizedBox(height: 6),
-            Text(price, style: const TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.w600)),
+            Text(price, style: TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.w400, fontSize: 12.sp)),
           ],
         ),
       ),

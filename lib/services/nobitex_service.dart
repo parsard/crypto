@@ -46,7 +46,7 @@ class NobitexService {
     final response = await http.post(
       url,
       headers: _tokenHeaders(token),
-      body: jsonEncode(bodyMap), // 🔥 تغییر اصلی
+      body: jsonEncode(bodyMap),
     );
 
     if (response.statusCode == 200) {

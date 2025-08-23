@@ -1,3 +1,4 @@
+import 'package:crypto_app/model/crypto_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'market_state.dart';
 import '../../../services/nobitex_service.dart';
@@ -12,6 +13,9 @@ class MarketCubit extends Cubit<MarketState> {
   }) : super(const MarketState());
 
   Future<void> fetchMarketStats() async {
+    // Return if already loading to prevent duplicate calls
+    if (state.isLoading) return;
+
     emit(state.copyWith(isLoading: true, error: null));
 
     try {
@@ -23,21 +27,24 @@ class MarketCubit extends Cubit<MarketState> {
 
       final stats = data['stats'] as Map<String, dynamic>;
 
-      final cryptos = stats.entries.map((entry) {
-        final symbol = entry.key.toUpperCase();
+      // Map the API response to a list of Crypto objects
+      final List<Crypto> cryptos = stats.entries.map((entry) {
+        // Correctly extract the base symbol, e.g., 'btc' from 'btc-usdt'
+        final String baseSymbol = entry.key.split('-').first.toUpperCase();
 
-        // ورودی API ممکن است String باشد، اینجا آن را به double تبدیل می‌کنیم
-        final bestSell = double.tryParse(
+        // Safely parse the price to a double
+        final double price = double.tryParse(
               entry.value['bestSell'].toString(),
             ) ??
-            0;
+            0.0;
 
-        return {
-          'name': _mapSymbolToName(symbol),
-          'symbol': symbol,
-          'price': bestSell.toStringAsFixed(2),
-          'imageUrl': _cryptoLogo(symbol),
-        };
+        // Create an instance of the Crypto model
+        return Crypto(
+          name: _mapSymbolToName(baseSymbol),
+          symbol: baseSymbol,
+          price: price, // Pass the double, not a formatted string
+          imageUrl: _getLogoUrl(baseSymbol),
+        );
       }).toList();
 
       emit(
@@ -54,6 +61,7 @@ class MarketCubit extends Cubit<MarketState> {
     emit(state.copyWith(searchQuery: query));
   }
 
+  // Helper function to map symbol to a readable name
   static String _mapSymbolToName(String symbol) {
     switch (symbol) {
       case 'BTC':
@@ -75,7 +83,9 @@ class MarketCubit extends Cubit<MarketState> {
     }
   }
 
-  static String _cryptoLogo(String symbol) {
-    return 'https://cryptologos.cc/logos/${symbol.toLowerCase()}-logo.png?v=032';
+  // Helper function to get a reliable logo URL
+  static String _getLogoUrl(String symbol) {
+    // Using a more reliable source for cryptocurrency icons
+    return 'https://raw.githubusercontent.com/atomiclabs/cryptocurrency-icons/master/128/color/${symbol.toLowerCase()}.png';
   }
 }
