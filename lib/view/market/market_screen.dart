@@ -1,9 +1,9 @@
-import 'package:crypto/view/market/logic/market_cubit.dart';
-import 'package:crypto/view/market/logic/market_state.dart';
-import 'package:crypto/view/market/widgets/crypto_card.dart';
-import 'package:crypto/view/market/widgets/crypto_suggestion.dart';
-import 'package:crypto/view/market/widgets/market_search_bar.dart';
-import 'package:crypto/view/market/widgets/section_title.dart';
+import 'package:crypto_app/view/market/logic/market_cubit.dart';
+import 'package:crypto_app/view/market/logic/market_state.dart';
+import 'package:crypto_app/view/market/widgets/crypto_card.dart';
+import 'package:crypto_app/view/market/widgets/crypto_suggestion.dart';
+import 'package:crypto_app/view/market/widgets/market_search_bar.dart';
+import 'package:crypto_app/view/market/widgets/section_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -25,16 +25,14 @@ class MarketScreen extends StatelessWidget {
               return Center(child: Text(state.error!, style: const TextStyle(color: Colors.redAccent)));
             }
 
-            final suggestions =
-                state.cryptos.where((c) {
-                  return c['name']!.toLowerCase().contains(state.searchQuery.toLowerCase()) ||
-                      c['symbol']!.toLowerCase().contains(state.searchQuery.toLowerCase());
-                }).toList();
+            final suggestions = state.cryptos.where((c) {
+              return c['name']!.toLowerCase().contains(state.searchQuery.toLowerCase()) ||
+                  c['symbol']!.toLowerCase().contains(state.searchQuery.toLowerCase());
+            }).toList();
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // --- Top Bar ---
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   child: Row(
@@ -72,25 +70,24 @@ class MarketScreen extends StatelessWidget {
                     margin: const EdgeInsets.symmetric(horizontal: 20),
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF1A1A27)),
                     child: Column(
-                      children:
-                          suggestions.isNotEmpty
-                              ? suggestions
-                                  .map(
-                                    (c) => CryptoSuggestion(
-                                      name: c['name']!,
-                                      symbol: c['symbol']!,
-                                      onTap: () {
-                                        // navigate to detail
-                                      },
-                                    ),
-                                  )
-                                  .toList()
-                              : [
-                                const Padding(
-                                  padding: EdgeInsets.all(12.0),
-                                  child: Text('No matches found', style: TextStyle(color: Colors.white54)),
+                      children: suggestions.isNotEmpty
+                          ? suggestions
+                              .map(
+                                (c) => CryptoSuggestion(
+                                  name: c['name']!,
+                                  symbol: c['symbol']!,
+                                  onTap: () {
+                                    // navigate to detail
+                                  },
                                 ),
-                              ],
+                              )
+                              .toList()
+                          : [
+                              const Padding(
+                                padding: EdgeInsets.all(12.0),
+                                child: Text('No matches found', style: TextStyle(color: Colors.white54)),
+                              ),
+                            ],
                     ),
                   ),
 
@@ -113,20 +110,19 @@ class MarketScreen extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
-                      children:
-                          state.cryptos
-                              .map(
-                                (c) => CryptoCard(
-                                  name: c['name']!,
-                                  symbol: c['symbol']!,
-                                  price: c['price']!,
-                                  imageUrl: c['imageUrl']!,
-                                  onTap: () {
-                                    // navigate to detail page for symbol
-                                  },
-                                ),
-                              )
-                              .toList(),
+                      children: state.cryptos
+                          .map(
+                            (c) => CryptoCard(
+                              name: c['name']!,
+                              symbol: c['symbol']!,
+                              price: c['price']!,
+                              imageUrl: c['imageUrl']!,
+                              onTap: () {
+                                // navigate to detail page for symbol
+                              },
+                            ),
+                          )
+                          .toList(),
                     ),
                   ),
                 ),

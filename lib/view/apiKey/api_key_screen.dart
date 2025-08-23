@@ -1,10 +1,10 @@
-import 'package:crypto/view/apiKey/logic/api_key_cubit.dart';
-import 'package:crypto/view/apiKey/logic/api_key_state.dart';
-import 'package:crypto/view/apiKey/widgets/custom_gradient_app_bar.dart';
-import 'package:crypto/view/apiKey/widgets/gradient_button.dart';
-import 'package:crypto/view/apiKey/widgets/gradient_icon_container.dart';
-import 'package:crypto/view/apiKey/widgets/gradient_text_field.dart';
-import 'package:crypto/view/apiKey/widgets/help_text_link.dart';
+import 'package:crypto_app/view/apiKey/logic/api_key_cubit.dart';
+import 'package:crypto_app/view/apiKey/logic/api_key_state.dart';
+import 'package:crypto_app/view/apiKey/widgets/custom_gradient_app_bar.dart';
+import 'package:crypto_app/view/apiKey/widgets/gradient_button.dart';
+import 'package:crypto_app/view/apiKey/widgets/gradient_icon_container.dart';
+import 'package:crypto_app/view/apiKey/widgets/gradient_text_field.dart';
+import 'package:crypto_app/view/apiKey/widgets/help_text_link.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,9 +34,12 @@ class ApiKeyScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(24.0),
                   child: BlocListener<ApiKeyCubit, ApiKeyState>(
-                    listenWhen: (prev, curr) => prev.isLoading != curr.isLoading || prev.error != curr.error,
+                    listenWhen: (prev, curr) =>
+                        prev.isLoading != curr.isLoading ||
+                        prev.error != curr.error ||
+                        prev.isSuccess != curr.isSuccess,
                     listener: (context, state) {
-                      if (!state.isLoading && state.error == null && state.apiKey.isNotEmpty) {
+                      if (state.isSuccess) {
                         Navigator.pushReplacementNamed(context, '/market');
                       }
                     },
@@ -97,26 +100,25 @@ class ApiKeyScreen extends StatelessWidget {
   void _showHelpDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            backgroundColor: const Color(0xFF1A1A2E),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-            title: const Text('How to get API Key?', style: TextStyle(color: Colors.white)),
-            content: Text(
-              '1. Go to Nobitex website\n'
-              '2. Login to your account\n'
-              '3. Navigate to API settings\n'
-              '4. Generate a new API key\n'
-              '5. Copy and paste it here',
-              style: TextStyle(color: Colors.white.withOpacity(0.8)),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Got it', style: TextStyle(color: Color(0xFFFFD700))),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF1A1A2E),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+        title: const Text('How to get API Key?', style: TextStyle(color: Colors.white)),
+        content: Text(
+          '1. Go to Nobitex website\n'
+          '2. Login to your account\n'
+          '3. Navigate to API settings\n'
+          '4. Generate a new API key\n'
+          '5. Copy and paste it here',
+          style: TextStyle(color: Colors.white.withOpacity(0.8)),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Got it', style: TextStyle(color: Color(0xFFFFD700))),
           ),
+        ],
+      ),
     );
   }
 }

@@ -1,8 +1,8 @@
-import 'package:crypto/view/onBoarding/logic/onboarding_cubit.dart';
-import 'package:crypto/view/onBoarding/widgets/onboarding_done_button.dart';
-import 'package:crypto/view/onBoarding/widgets/onboarding_next_button.dart';
-import 'package:crypto/view/onBoarding/widgets/onboarding_page_content.dart';
-import 'package:crypto/view/onBoarding/widgets/onboarding_skip_button.dart';
+import 'package:crypto_app/view/onBoarding/logic/onboarding_cubit.dart';
+import 'package:crypto_app/view/onBoarding/widgets/onboarding_done_button.dart';
+import 'package:crypto_app/view/onBoarding/widgets/onboarding_next_button.dart';
+import 'package:crypto_app/view/onBoarding/widgets/onboarding_page_content.dart';
+import 'package:crypto_app/view/onBoarding/widgets/onboarding_skip_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:introduction_screen/introduction_screen.dart';

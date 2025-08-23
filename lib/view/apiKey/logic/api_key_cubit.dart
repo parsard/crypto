@@ -1,5 +1,5 @@
-import 'package:crypto/services/nobitex_service.dart';
-import 'package:crypto/services/token_storage_service.dart';
+import 'package:crypto_app/services/nobitex_service.dart';
+import 'package:crypto_app/services/token_storage_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'api_key_state.dart';
 
@@ -31,7 +31,7 @@ class ApiKeyCubit extends Cubit<ApiKeyState> {
         // Persist token securely
         await TokenStorage.saveToken(state.apiKey.trim());
 
-        emit(state.copyWith(isLoading: false)); // UI can check success by error == null
+        emit(state.copyWith(isLoading: false, isSuccess: true)); // UI can check success by error == null
       } else {
         emit(state.copyWith(isLoading: false, error: "Invalid API Key"));
       }

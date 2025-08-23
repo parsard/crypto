@@ -1,48 +1,35 @@
-import 'package:crypto/services/nobitex_service.dart';
-import 'package:crypto/view/apiKey/api_key_screen.dart';
-import 'package:crypto/view/apiKey/logic/api_key_cubit.dart';
-import 'package:crypto/view/market/logic/market_cubit.dart';
-import 'package:crypto/view/market/market_screen.dart';
-
-import 'package:crypto/view/onBoarding/logic/onboarding_cubit.dart';
-import 'package:crypto/view/onBoarding/on_boarding_screen.dart';
-import 'package:crypto/view/splash/splash_screen.dart';
+import 'package:crypto_app/services/auth_cubit.dart';
+import 'package:crypto_app/services/nobitex_service.dart';
+import 'package:crypto_app/view/apiKey/api_key_screen.dart';
+import 'package:crypto_app/view/apiKey/logic/api_key_cubit.dart';
+import 'package:crypto_app/view/market/logic/market_cubit.dart';
+import 'package:crypto_app/view/market/logic/market_state.dart';
+import 'package:crypto_app/view/market/market_screen.dart';
+import 'package:crypto_app/view/onBoarding/logic/onboarding_cubit.dart';
+import 'package:crypto_app/view/onBoarding/on_boarding_screen.dart';
+import 'package:crypto_app/view/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:lottie/lottie.dart';
+import 'package:crypto_app/core/animations.dart';
 
 void main() {
-  runApp(const CryptoApp());
+  runApp(
+    BlocProvider(
+      create: (_) => AuthCubit()..checkAuth(),
+      child: const CryptoApp(),
+    ),
+  );
 }
 
-class CryptoApp extends StatefulWidget {
+class CryptoApp extends StatelessWidget {
   const CryptoApp({super.key});
-
-  @override
-  State<CryptoApp> createState() => _CryptoAppState();
-}
-
-class _CryptoAppState extends State<CryptoApp> {
-  final _storage = const FlutterSecureStorage();
-  String? _savedToken;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadToken();
-  }
-
-  Future<void> _loadToken() async {
-    final token = await _storage.read(key: 'api_token');
-    setState(() {
-      _savedToken = token;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     final nobitexService = NobitexService();
+
     return ScreenUtilInit(
       designSize: const Size(375, 812),
       minTextAdapt: true,
@@ -52,20 +39,69 @@ class _CryptoAppState extends State<CryptoApp> {
           debugShowCheckedModeBanner: false,
           title: 'Crypto',
           theme: ThemeData(primarySwatch: Colors.blue),
-          home: const SplashScreen(),
-          routes: {
-            '/onboarding': (_) => BlocProvider(create: (_) => OnboardingCubit(), child: const OnboardingScreen()),
-            '/api-key': (_) => BlocProvider(create: (_) => ApiKeyCubit(nobitexService), child: const ApiKeyScreen()),
-            '/market': (_) {
-              if (_savedToken == null) {
-                // token missing — redirect to api-key screen
-                return BlocProvider(create: (_) => ApiKeyCubit(nobitexService), child: const ApiKeyScreen());
+          home: BlocBuilder<AuthCubit, AuthState>(
+            builder: (context, state) {
+              // Show Lottie during *any* loading phase
+              if (state.isLoading) {
+                return Scaffold(
+                  body: Center(
+                    child: Lottie.asset(
+                      JsonAssets.splashCrypto,
+                      width: 150,
+                      height: 150,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                );
               }
-              return BlocProvider(
-                create: (_) => MarketCubit(service: nobitexService, token: _savedToken!)..fetchMarketStats(),
-                child: const MarketScreen(),
-              );
+
+              // Authenticated → Market
+              if (state.isAuthenticated && state.token != null) {
+                return BlocProvider(
+                  create: (_) => MarketCubit(
+                    service: nobitexService,
+                    token: state.token!,
+                  )..fetchMarketStats(),
+                  child: BlocBuilder<MarketCubit, MarketState>(
+                    builder: (context, marketState) {
+                      if (marketState.isLoading) {
+                        return Scaffold(
+                          body: Center(
+                            child: Lottie.asset(
+                              JsonAssets.splashCrypto,
+                              width: 150,
+                              height: 150,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        );
+                      }
+                      return const MarketScreen();
+                    },
+                  ),
+                );
+              }
+
+              // Unauthenticated → Splash screen (which can navigate to OnBoarding or API key)
+              return const SplashScreen();
             },
+          ),
+          routes: {
+            '/onboarding': (_) => BlocProvider(
+                  create: (_) => OnboardingCubit(),
+                  child: const OnboardingScreen(),
+                ),
+            '/api-key': (_) => BlocProvider(
+                  create: (_) => ApiKeyCubit(nobitexService),
+                  child: const ApiKeyScreen(),
+                ),
+            '/market': (_) => BlocProvider(
+                  create: (_) => MarketCubit(
+                    service: nobitexService,
+                    token: context.read<AuthCubit>().state.token!,
+                  )..fetchMarketStats(),
+                  child: const MarketScreen(),
+                ),
           },
         );
       },

@@ -1,6 +1,6 @@
-import 'package:crypto/view/splash/widgets/animated_logo.dart';
-import 'package:crypto/view/splash/widgets/animated_splash_loader.dart';
-import 'package:crypto/view/splash/widgets/animated_title.dart';
+import 'package:crypto_app/view/splash/widgets/animated_logo.dart';
+import 'package:crypto_app/view/splash/widgets/animated_splash_loader.dart';
+import 'package:crypto_app/view/splash/widgets/animated_title.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
