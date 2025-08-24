@@ -13,55 +13,58 @@ class MarketCubit extends Cubit<MarketState> {
   }) : super(const MarketState());
 
   Future<void> fetchMarketStats() async {
-    // Return if already loading to prevent duplicate calls
     if (state.isLoading) return;
 
     emit(state.copyWith(isLoading: true, error: null));
 
     try {
+      // درخواست بدون محدود کردن srcCurrency
       final data = await service.getMarketStats(
         token: token,
-        srcCurrency: ['btc', 'eth', 'usdt', 'ada', 'bnb', 'xrp', 'doge'],
+        // اگر پارامتر رو حذف یا null کنی، همه جفت‌ها رو میاره
+        srcCurrency: [],
         dstCurrency: ['usdt'],
       );
 
       final stats = data['stats'] as Map<String, dynamic>;
 
-      // Map the API response to a list of Crypto objects
-      final List<Crypto> cryptos = stats.entries.map((entry) {
-        // Correctly extract the base symbol, e.g., 'btc' from 'btc-usdt'
+      final List<Crypto> all = stats.entries.map((entry) {
         final String baseSymbol = entry.key.split('-').first.toUpperCase();
-
-        // Safely parse the price to a double
         final double price = double.tryParse(
               entry.value['bestSell'].toString(),
             ) ??
             0.0;
 
-        // Create an instance of the Crypto model
         return Crypto(
           name: _mapSymbolToName(baseSymbol),
           symbol: baseSymbol,
-          price: price, // Pass the double, not a formatted string
+          price: price,
           imageUrl: _getLogoUrl(baseSymbol),
         );
       }).toList();
+      final List<Crypto> sortedByPrice = List.from(all)..sort((a, b) => b.price.compareTo(a.price));
 
-      emit(
-        state.copyWith(isLoading: false, cryptos: cryptos),
-      );
+      emit(state.copyWith(
+        isLoading: false,
+        cryptos: sortedByPrice.take(6).toList(),
+        allCryptos: all,
+        topCryptos: sortedByPrice.take(6).toList(),
+        filteredCryptos: all,
+      ));
     } catch (e) {
-      emit(
-        state.copyWith(isLoading: false, error: e.toString()),
-      );
+      emit(state.copyWith(isLoading: false, error: e.toString()));
     }
   }
 
   void updateSearchQuery(String query) {
-    emit(state.copyWith(searchQuery: query));
+    final filtered = state.allCryptos.where((c) {
+      final q = query.toLowerCase();
+      return c.name.toLowerCase().contains(q) || c.symbol.toLowerCase().contains(q);
+    }).toList();
+
+    emit(state.copyWith(searchQuery: query, filteredCryptos: filtered));
   }
 
-  // Helper function to map symbol to a readable name
   static String _mapSymbolToName(String symbol) {
     switch (symbol) {
       case 'BTC':
@@ -83,9 +86,7 @@ class MarketCubit extends Cubit<MarketState> {
     }
   }
 
-  // Helper function to get a reliable logo URL
   static String _getLogoUrl(String symbol) {
-    // Using a more reliable source for cryptocurrency icons
     return 'https://raw.githubusercontent.com/atomiclabs/cryptocurrency-icons/master/128/color/${symbol.toLowerCase()}.png';
   }
 }

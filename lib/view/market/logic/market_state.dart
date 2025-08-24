@@ -6,15 +6,36 @@ class MarketState extends Equatable {
   final String? error;
   final List<Crypto> cryptos;
   final String searchQuery;
+  final List<Crypto> allCryptos;
+  final List<Crypto> topCryptos;
+  final List<Crypto> filteredCryptos;
 
-  const MarketState({this.isLoading = false, this.error, this.cryptos = const [], this.searchQuery = ''});
+  const MarketState({
+    this.isLoading = false,
+    this.error,
+    this.cryptos = const [],
+    this.searchQuery = '',
+    this.allCryptos = const [],
+    this.topCryptos = const [],
+    this.filteredCryptos = const [],
+  });
 
-  MarketState copyWith({bool? isLoading, String? error, List<Crypto>? cryptos, String? searchQuery}) {
+  MarketState copyWith(
+      {bool? isLoading,
+      List<Crypto>? allCryptos,
+      List<Crypto>? topCryptos,
+      List<Crypto>? filteredCryptos,
+      String? error,
+      List<Crypto>? cryptos,
+      String? searchQuery}) {
     return MarketState(
       isLoading: isLoading ?? this.isLoading,
       error: error,
       cryptos: cryptos ?? this.cryptos,
       searchQuery: searchQuery ?? this.searchQuery,
+      allCryptos: allCryptos ?? this.allCryptos,
+      topCryptos: topCryptos ?? this.topCryptos,
+      filteredCryptos: filteredCryptos ?? this.filteredCryptos,
     );
   }
 

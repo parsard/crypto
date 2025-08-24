@@ -4,12 +4,15 @@ class CryptoSuggestion extends StatelessWidget {
   final String name;
   final String symbol;
   final VoidCallback onTap;
+  final String imageUrl;
 
-  const CryptoSuggestion({super.key, required this.name, required this.symbol, required this.onTap});
+  const CryptoSuggestion(
+      {super.key, required this.name, required this.symbol, required this.onTap, required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      leading: CircleAvatar(backgroundImage: NetworkImage(imageUrl), radius: 16),
       dense: true,
       tileColor: const Color(0xFF1E1E2C),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),

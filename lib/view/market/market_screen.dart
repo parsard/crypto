@@ -1,4 +1,5 @@
 import 'package:crypto_app/model/crypto_model.dart';
+import 'package:crypto_app/view/market/all_cryptos_screen.dart';
 import 'package:crypto_app/view/market/logic/market_cubit.dart';
 import 'package:crypto_app/view/market/logic/market_state.dart';
 import 'package:crypto_app/view/market/widgets/crypto_card.dart';
@@ -94,11 +95,10 @@ class MarketScreen extends StatelessWidget {
                             ? suggestions
                                 .map(
                                   (c) => CryptoSuggestion(
-                                    name: c.name, // <-- CHANGED
-                                    symbol: c.symbol, // <-- CHANGED
-                                    onTap: () {
-                                      // navigate to detail
-                                    },
+                                    name: c.name,
+                                    symbol: c.symbol,
+                                    imageUrl: c.imageUrl,
+                                    onTap: () {},
                                   ),
                                 )
                                 .toList()
@@ -121,7 +121,17 @@ class MarketScreen extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: SectionTitle(
                       title: "Top Cryptos",
-                      onSeeAll: () {},
+                      onSeeAll: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => BlocProvider.value(
+                              value: context.read<MarketCubit>(),
+                              child: const AllCryptosScreen(),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                   SizedBox(height: 12.h),
@@ -131,7 +141,7 @@ class MarketScreen extends StatelessWidget {
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      itemCount: state.cryptos.length,
+                      itemCount: state.topCryptos.length,
                       itemBuilder: (context, index) {
                         final Crypto c = state.cryptos[index];
                         return Padding(

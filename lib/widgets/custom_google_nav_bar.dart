@@ -36,7 +36,7 @@ class CustomGoogleNavBar extends StatelessWidget {
             activeColor: Colors.cyanAccent,
             iconSize: 24,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            duration: const Duration(milliseconds: 1000),
+            duration: const Duration(milliseconds: 500),
             tabBackgroundColor: Colors.cyan.withOpacity(0.2),
             color: Colors.grey[400],
             tabs: const [
