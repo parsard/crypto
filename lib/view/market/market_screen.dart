@@ -1,4 +1,5 @@
 import 'package:crypto_app/model/crypto_model.dart';
+import 'package:crypto_app/view/cryptoDetail/crypto_detail.dart';
 import 'package:crypto_app/view/market/all_cryptos_screen.dart';
 import 'package:crypto_app/view/market/logic/market_cubit.dart';
 import 'package:crypto_app/view/market/logic/market_state.dart';
@@ -7,6 +8,7 @@ import 'package:crypto_app/view/market/widgets/crypto_suggestion.dart';
 import 'package:crypto_app/view/market/widgets/market_search_bar.dart';
 import 'package:crypto_app/view/market/widgets/section_title.dart';
 import 'package:crypto_app/view/profile/profile_screen.dart';
+import 'package:crypto_app/widgets/loading_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,7 +24,7 @@ class MarketScreen extends StatelessWidget {
         child: BlocBuilder<MarketCubit, MarketState>(
           builder: (context, state) {
             if (state.isLoading && state.cryptos.isEmpty) {
-              return const Center(child: CircularProgressIndicator());
+              return LoadingAnimation();
             }
 
             if (state.error != null) {
@@ -98,7 +100,13 @@ class MarketScreen extends StatelessWidget {
                                     name: c.name,
                                     symbol: c.symbol,
                                     imageUrl: c.imageUrl,
-                                    onTap: () {},
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (_) => CryptoDetailScreen(
+                                                  symbol: c.symbol, name: c.name, imageUrl: c.imageUrl)));
+                                    },
                                   ),
                                 )
                                 .toList()
@@ -151,7 +159,13 @@ class MarketScreen extends StatelessWidget {
                             symbol: c.symbol,
                             price: c.formattedPrice,
                             imageUrl: c.imageUrl,
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) =>
+                                          CryptoDetailScreen(symbol: c.symbol, name: c.name, imageUrl: c.imageUrl)));
+                            },
                           ),
                         );
                       },

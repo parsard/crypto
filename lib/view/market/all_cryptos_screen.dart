@@ -1,3 +1,4 @@
+import 'package:crypto_app/view/cryptoDetail/crypto_detail.dart';
 import 'package:crypto_app/view/market/logic/market_cubit.dart';
 import 'package:crypto_app/view/market/logic/market_state.dart';
 import 'package:crypto_app/view/market/widgets/crypto_card.dart';
@@ -26,7 +27,6 @@ class AllCryptosScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // Search bar only rebuilds on searchQuery change
             Padding(
               padding: EdgeInsets.all(16.w),
               child: BlocSelector<MarketCubit, MarketState, String>(
@@ -72,7 +72,13 @@ class AllCryptosScreen extends StatelessWidget {
                         symbol: c.symbol,
                         price: c.formattedPrice,
                         imageUrl: c.imageUrl,
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) =>
+                                      CryptoDetailScreen(symbol: c.symbol, name: c.name, imageUrl: c.imageUrl)));
+                        },
                       );
                     },
                   );

@@ -44,6 +44,7 @@ dependencies:
   intl:
   google_nav_bar: ^5.0.7
   provider:
+  fl_chart:
 dev_dependencies:
   flutter_test:
     sdk: flutter
