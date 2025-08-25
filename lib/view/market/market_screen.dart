@@ -36,11 +36,6 @@ class MarketScreen extends StatelessWidget {
               );
             }
 
-            final List<Crypto> suggestions = state.cryptos.where((c) {
-              final query = state.searchQuery.toLowerCase();
-              return c.name.toLowerCase().contains(query) || c.symbol.toLowerCase().contains(query);
-            }).toList();
-
             return SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               child: Column(
@@ -73,54 +68,7 @@ class MarketScreen extends StatelessWidget {
                     ),
                   ),
 
-                  /// --- Search Bar ---
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: MarketSearchBar(
-                      onChanged: (value) {
-                        context.read<MarketCubit>().updateSearchQuery(value);
-                      },
-                    ),
-                  ),
                   SizedBox(height: 10.h),
-
-                  /// --- Suggestions ---
-                  if (state.searchQuery.isNotEmpty)
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 20.w),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.r),
-                        color: const Color(0xFF1A1A27),
-                      ),
-                      child: Column(
-                        children: suggestions.isNotEmpty
-                            ? suggestions
-                                .map(
-                                  (c) => CryptoSuggestion(
-                                    name: c.name,
-                                    symbol: c.symbol,
-                                    imageUrl: c.imageUrl,
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (_) => CryptoDetailScreen(
-                                                  symbol: c.symbol, name: c.name, imageUrl: c.imageUrl)));
-                                    },
-                                  ),
-                                )
-                                .toList()
-                            : [
-                                const Padding(
-                                  padding: EdgeInsets.all(12.0),
-                                  child: Text(
-                                    'No matches found',
-                                    style: TextStyle(color: Colors.white54),
-                                  ),
-                                ),
-                              ],
-                      ),
-                    ),
 
                   SizedBox(height: 16.h),
 
