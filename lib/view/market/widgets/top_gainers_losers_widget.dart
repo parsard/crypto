@@ -6,11 +6,13 @@ import 'package:fl_chart/fl_chart.dart';
 class TopGainersLosersWidget extends StatelessWidget {
   final List<Crypto> gainers;
   final List<Crypto> losers;
+  final void Function(Crypto crypto)? onTap;
 
   const TopGainersLosersWidget({
     super.key,
     required this.gainers,
     required this.losers,
+    this.onTap,
   });
 
   @override
@@ -40,7 +42,11 @@ class TopGainersLosersWidget extends StatelessWidget {
           ),
         ),
         SizedBox(height: 12.h),
-        ...items.map((crypto) => Container(
+        ...items.map(
+          (crypto) => GestureDetector(
+            // 🔹 tapable row
+            onTap: () => onTap?.call(crypto),
+            child: Container(
               margin: EdgeInsets.only(bottom: 12.h),
               padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
@@ -127,7 +133,9 @@ class TopGainersLosersWidget extends StatelessWidget {
                   ),
                 ],
               ),
-            )),
+            ),
+          ),
+        ),
       ],
     );
   }

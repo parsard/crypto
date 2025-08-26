@@ -126,7 +126,22 @@ class _MarketScreenState extends State<MarketScreen> {
                       },
                     ),
                   ),
-                  TopGainersLosersWidget(gainers: state.topGainers, losers: state.topLosers)
+                  TopGainersLosersWidget(
+                    gainers: state.topGainers,
+                    losers: state.topLosers,
+                    onTap: (crypto) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CryptoDetailScreen(
+                            symbol: crypto.symbol,
+                            name: crypto.name,
+                            imageUrl: crypto.imageUrl,
+                          ),
+                        ),
+                      );
+                    },
+                  )
                 ],
               ),
             );

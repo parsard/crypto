@@ -43,23 +43,31 @@ class MarketCubit extends Cubit<MarketState> {
 
       final stats = data['stats'] as Map<String, dynamic>;
 
-      final List<Crypto> all = stats.entries.map((entry) {
+      /// Collect data for all cryptos
+      final List<Crypto> all = [];
+      for (final entry in stats.entries) {
         final String baseSymbol = entry.key.split('-').first.toUpperCase();
         final double price = double.tryParse(entry.value['bestSell'].toString()) ?? 0.0;
         final double change = double.tryParse(entry.value['dayChange'].toString()) ?? 0.0;
+        List<double> history = [];
+        try {
+          // history = await service.getPriceHistory(symbol: baseSymbol);
+        } catch (e) {
+          print("⚠️ Failed to fetch history for $baseSymbol: $e");
+        }
 
-        return Crypto(
+        all.add(Crypto(
           name: _mapSymbolToName(baseSymbol),
           symbol: baseSymbol,
           price: price,
           imageUrl: getBestLogoUrl(baseSymbol),
           changePercent: change,
-        );
-      }).toList();
+          priceHistory: history,
+        ));
+      }
 
       final topGainers = List<Crypto>.from(all)..sort((a, b) => b.changePercent.compareTo(a.changePercent));
       final topLosers = List<Crypto>.from(all)..sort((a, b) => a.changePercent.compareTo(b.changePercent));
-
       final List<Crypto> sortedByPrice = List.from(all)..sort((a, b) => b.price.compareTo(a.price));
 
       final debugTop = sortedByPrice.take(3).map((c) => "${c.symbol}: ${c.price}").join(" | ");
@@ -77,6 +85,7 @@ class MarketCubit extends Cubit<MarketState> {
       ));
     } catch (e) {
       print("❌ Error fetching market stats: $e");
+      emit(state.copyWith(isLoading: false, error: e.toString()));
     } finally {
       _isFetching = false;
     }
@@ -128,16 +137,7 @@ class MarketCubit extends Cubit<MarketState> {
 
   static String getBestLogoUrl(String symbol) {
     final urls = getLogoUrls(symbol);
-
-    // Last fallback: minimal dollar sign icon
     const dollarPlaceholder = 'https://upload.wikimedia.org/wikipedia/commons/5/5a/Dollar_sign_simple.svg';
-
-    // If one of the URLs is probably valid — pick the first
-    if (urls.isNotEmpty) {
-      return urls.first;
-    }
-
-    // Otherwise use the dollar sign placeholder
-    return dollarPlaceholder;
+    return urls.isNotEmpty ? urls.first : dollarPlaceholder;
   }
 }
