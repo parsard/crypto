@@ -4,8 +4,6 @@ import 'package:crypto_app/view/market/all_cryptos_screen.dart';
 import 'package:crypto_app/view/market/logic/market_cubit.dart';
 import 'package:crypto_app/view/market/logic/market_state.dart';
 import 'package:crypto_app/view/market/widgets/crypto_card.dart';
-import 'package:crypto_app/view/market/widgets/crypto_suggestion.dart';
-import 'package:crypto_app/view/market/widgets/market_search_bar.dart';
 import 'package:crypto_app/view/market/widgets/section_title.dart';
 import 'package:crypto_app/view/profile/profile_screen.dart';
 import 'package:crypto_app/widgets/loading_animation.dart';
@@ -13,8 +11,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class MarketScreen extends StatelessWidget {
+class MarketScreen extends StatefulWidget {
   const MarketScreen({super.key});
+
+  @override
+  State<MarketScreen> createState() => _MarketScreenState();
+}
+
+class _MarketScreenState extends State<MarketScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<MarketCubit>().startAutoUpdate();
+  }
+
+  @override
+  void dispose() {
+    context.read<MarketCubit>().stopAutoUpdate();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
