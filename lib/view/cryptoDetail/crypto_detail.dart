@@ -66,14 +66,7 @@ class _CryptoDetailScreenState extends State<CryptoDetailScreen> {
                     if (state.isLoading) {
                       return LoadingAnimation();
                     }
-                    if (state.error != null) {
-                      return Center(
-                        child: Text(
-                          state.error!,
-                          style: const TextStyle(color: Colors.red),
-                        ),
-                      );
-                    }
+
                     return Padding(
                       padding: EdgeInsets.all(16.w),
                       child: Column(

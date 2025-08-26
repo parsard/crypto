@@ -9,6 +9,7 @@ class MarketCubit extends Cubit<MarketState> {
   final NobitexService service;
   final String token;
   Timer? _timer;
+  bool _isFetching = false;
 
   MarketCubit({
     required this.service,
@@ -28,6 +29,8 @@ class MarketCubit extends Cubit<MarketState> {
   }
 
   Future<void> fetchMarketStats({bool showLoading = true}) async {
+    if (_isFetching) return;
+    _isFetching = true;
     if (state.isLoading && showLoading) return;
 
     emit(state.copyWith(isLoading: showLoading, error: null));
@@ -70,7 +73,9 @@ class MarketCubit extends Cubit<MarketState> {
         filteredCryptos: all,
       ));
     } catch (e) {
-      emit(state.copyWith(isLoading: false, error: e.toString()));
+      print("❌ Error fetching market stats: $e");
+    } finally {
+      _isFetching = false;
     }
   }
 

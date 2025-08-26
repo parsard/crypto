@@ -7,9 +7,14 @@ import 'crypto_detail_state.dart';
 
 class CryptoDetailCubit extends Cubit<CryptoDetailState> {
   Timer? _timer;
+  bool _isFetching = false;
+
   CryptoDetailCubit() : super(const CryptoDetailState());
 
   Future<void> fetchOrderBook(String symbol, {bool showLoading = false}) async {
+    if (_isFetching) return;
+    _isFetching = true;
+
     if (showLoading) {
       emit(state.copyWith(isLoading: true, error: null));
     }
@@ -17,14 +22,16 @@ class CryptoDetailCubit extends Cubit<CryptoDetailState> {
     try {
       final apiSymbol = symbol.toUpperCase().endsWith('IRT') ? symbol.toUpperCase() : '${symbol.toUpperCase()}IRT';
 
-      final res = await http.get(Uri.parse("https://apiv2.nobitex.ir/v2/depth/$apiSymbol"));
+      final res = await http.get(
+        Uri.parse("https://apiv2.nobitex.ir/v2/depth/$apiSymbol"),
+      );
 
       if (res.statusCode == 200) {
         final data = jsonDecode(res.body);
 
         if (data['status'] != 'ok') {
-          emit(state.copyWith(error: 'Invalid server response'));
-          return;
+          print("⚠️ Invalid server response");
+          return; // UI رو عوض نمیکنیم
         }
 
         emit(state.copyWith(
@@ -39,19 +46,21 @@ class CryptoDetailCubit extends Cubit<CryptoDetailState> {
           ),
         ));
       } else {
-        emit(state.copyWith(error: 'Server error: ${res.statusCode}'));
+        print("Server error: ${res.statusCode}");
       }
     } catch (e) {
-      emit(state.copyWith(error: e.toString()));
+      print("❌ Fetch error: $e");
+    } finally {
+      _isFetching = false; // آزاد کردن برای درخواست بعدی
     }
   }
 
   void startAutoUpdate(String symbol) {
     emit(state.copyWith(isLoading: true));
     fetchOrderBook(symbol, showLoading: true);
-    _timer = Timer.periodic(const Duration(seconds: 3), (_) {
-      print('Fetching order book at ${DateTime.now()}');
 
+    _timer = Timer.periodic(const Duration(seconds: 3), (_) {
+      print('📊 Fetching order book at ${DateTime.now()}');
       fetchOrderBook(symbol);
     });
   }

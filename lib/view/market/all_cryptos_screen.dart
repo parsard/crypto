@@ -8,8 +8,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../model/crypto_model.dart';
 
-class AllCryptosScreen extends StatelessWidget {
+class AllCryptosScreen extends StatefulWidget {
   const AllCryptosScreen({super.key});
+
+  @override
+  State<AllCryptosScreen> createState() => _AllCryptosScreenState();
+}
+
+class _AllCryptosScreenState extends State<AllCryptosScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<MarketCubit>().startAutoUpdate();
+  }
+
+  @override
+  void dispose() {
+    context.read<MarketCubit>().stopAutoUpdate();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

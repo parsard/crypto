@@ -42,15 +42,6 @@ class _MarketScreenState extends State<MarketScreen> {
               return LoadingAnimation();
             }
 
-            if (state.error != null) {
-              return Center(
-                child: Text(
-                  state.error!,
-                  style: const TextStyle(color: Colors.redAccent),
-                ),
-              );
-            }
-
             return SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               child: Column(
