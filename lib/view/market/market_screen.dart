@@ -62,22 +62,35 @@ class _MarketScreenState extends State<MarketScreen> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        IconButton(
-                          icon: const CircleAvatar(
-                            backgroundColor: Colors.grey,
-                            child: Icon(Icons.person, color: Colors.white),
-                          ),
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ProfileScreenWrapper()));
-                          },
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.refresh, color: Colors.white),
+                              tooltip: 'Refresh',
+                              onPressed: () {
+                                context.read<MarketCubit>().fetchMarketStats();
+                              },
+                            ),
+                            IconButton(
+                              icon: const CircleAvatar(
+                                backgroundColor: Colors.grey,
+                                child: Icon(Icons.person, color: Colors.white),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => const ProfileScreenWrapper(),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ),
 
                   SizedBox(height: 10.h),
-
-                  SizedBox(height: 16.h),
 
                   /// --- Crypto Row ---
                   Padding(
@@ -116,16 +129,22 @@ class _MarketScreenState extends State<MarketScreen> {
                             imageUrl: c.imageUrl,
                             onTap: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) =>
-                                          CryptoDetailScreen(symbol: c.symbol, name: c.name, imageUrl: c.imageUrl)));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => CryptoDetailScreen(
+                                    symbol: c.symbol,
+                                    name: c.name,
+                                    imageUrl: c.imageUrl,
+                                  ),
+                                ),
+                              );
                             },
                           ),
                         );
                       },
                     ),
                   ),
+
                   TopGainersLosersWidget(
                     gainers: state.topGainers,
                     losers: state.topLosers,
@@ -141,7 +160,7 @@ class _MarketScreenState extends State<MarketScreen> {
                         ),
                       );
                     },
-                  )
+                  ),
                 ],
               ),
             );
