@@ -5,13 +5,14 @@ class Crypto {
   final String symbol;
   final double price;
   final String imageUrl;
+  final double changePercent;
 
-  const Crypto({
-    required this.name,
-    required this.symbol,
-    required this.price,
-    required this.imageUrl,
-  });
+  const Crypto(
+      {required this.name,
+      required this.symbol,
+      required this.price,
+      required this.imageUrl,
+      required this.changePercent});
 
   String get formattedPrice {
     final formatter = NumberFormat.currency(

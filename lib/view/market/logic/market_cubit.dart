@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:crypto_app/model/crypto_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'market_state.dart';
@@ -46,23 +45,25 @@ class MarketCubit extends Cubit<MarketState> {
 
       final List<Crypto> all = stats.entries.map((entry) {
         final String baseSymbol = entry.key.split('-').first.toUpperCase();
-        final double price = double.tryParse(
-              entry.value['bestSell'].toString(),
-            ) ??
-            0.0;
+        final double price = double.tryParse(entry.value['bestSell'].toString()) ?? 0.0;
+        final double change = double.tryParse(entry.value['dayChange'].toString()) ?? 0.0;
 
         return Crypto(
           name: _mapSymbolToName(baseSymbol),
           symbol: baseSymbol,
           price: price,
-          imageUrl: _getLogoUrl(baseSymbol),
+          imageUrl: getBestLogoUrl(baseSymbol),
+          changePercent: change,
         );
       }).toList();
+
+      final topGainers = List<Crypto>.from(all)..sort((a, b) => b.changePercent.compareTo(a.changePercent));
+      final topLosers = List<Crypto>.from(all)..sort((a, b) => a.changePercent.compareTo(b.changePercent));
+
       final List<Crypto> sortedByPrice = List.from(all)..sort((a, b) => b.price.compareTo(a.price));
 
       final debugTop = sortedByPrice.take(3).map((c) => "${c.symbol}: ${c.price}").join(" | ");
       final now = DateTime.now().toIso8601String();
-
       print("[$now] Market data refreshed -> $debugTop");
 
       emit(state.copyWith(
@@ -71,6 +72,8 @@ class MarketCubit extends Cubit<MarketState> {
         allCryptos: all,
         topCryptos: sortedByPrice.take(6).toList(),
         filteredCryptos: all,
+        topGainers: topGainers.take(3).toList(),
+        topLosers: topLosers.take(3).toList(),
       ));
     } catch (e) {
       print("❌ Error fetching market stats: $e");
@@ -115,7 +118,26 @@ class MarketCubit extends Cubit<MarketState> {
     }
   }
 
-  static String _getLogoUrl(String symbol) {
-    return 'https://raw.githubusercontent.com/atomiclabs/cryptocurrency-icons/master/128/color/${symbol.toLowerCase()}.png';
+  static List<String> getLogoUrls(String symbol) {
+    final lower = symbol.toLowerCase();
+    return [
+      'https://raw.githubusercontent.com/atomiclabs/cryptocurrency-icons/master/128/color/$lower.png',
+      'https://cryptoicons.org/api/icon/$lower/128'
+    ];
+  }
+
+  static String getBestLogoUrl(String symbol) {
+    final urls = getLogoUrls(symbol);
+
+    // Last fallback: minimal dollar sign icon
+    const dollarPlaceholder = 'https://upload.wikimedia.org/wikipedia/commons/5/5a/Dollar_sign_simple.svg';
+
+    // If one of the URLs is probably valid — pick the first
+    if (urls.isNotEmpty) {
+      return urls.first;
+    }
+
+    // Otherwise use the dollar sign placeholder
+    return dollarPlaceholder;
   }
 }

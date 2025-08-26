@@ -5,6 +5,7 @@ import 'package:crypto_app/view/market/logic/market_cubit.dart';
 import 'package:crypto_app/view/market/logic/market_state.dart';
 import 'package:crypto_app/view/market/widgets/crypto_card.dart';
 import 'package:crypto_app/view/market/widgets/section_title.dart';
+import 'package:crypto_app/view/market/widgets/top_gainers_losers_widget.dart';
 import 'package:crypto_app/view/profile/profile_screen.dart';
 import 'package:crypto_app/widgets/loading_animation.dart';
 import 'package:flutter/material.dart';
@@ -125,6 +126,7 @@ class _MarketScreenState extends State<MarketScreen> {
                       },
                     ),
                   ),
+                  TopGainersLosersWidget(gainers: state.topGainers, losers: state.topLosers)
                 ],
               ),
             );
