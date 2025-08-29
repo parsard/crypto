@@ -1,5 +1,6 @@
 import 'package:crypto_app/view/market/market_screen.dart';
 import 'package:crypto_app/view/profile/profile_screen.dart';
+import 'package:crypto_app/view/wallet/wallet_screen.dart';
 import 'package:crypto_app/widgets/custom_google_nav_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,7 @@ class _MainScreenState extends State<MainScreen> {
 
   static const List<Widget> _widgetOptions = <Widget>[
     MarketScreen(),
-    PlaceholderScreen(screenName: "Wallets"),
+    WalletScreen(),
     PlaceholderScreen(screenName: "Trade"), // Placeholder
     ProfileScreenWrapper(), // Using the wrapper is correct here
   ];

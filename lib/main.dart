@@ -8,6 +8,9 @@ import 'package:crypto_app/view/market/logic/market_state.dart';
 import 'package:crypto_app/view/onBoarding/logic/onboarding_cubit.dart';
 import 'package:crypto_app/view/onBoarding/on_boarding_screen.dart';
 import 'package:crypto_app/view/splash/splash_screen.dart';
+import 'package:crypto_app/view/wallet/logic/wallet_state.dart'; // 👈 اضافه شد
+import 'package:crypto_app/view/wallet/logic/wallet_cubit.dart';
+import 'package:crypto_app/view/wallet/wallet_screen.dart';    // 👈 اضافه شد
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -39,12 +42,13 @@ class CryptoApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Crypto',
           theme: ThemeData(
-              primarySwatch: Colors.blue,
-              scaffoldBackgroundColor: const Color(0xFF0F0F1E),
-              pageTransitionsTheme: const PageTransitionsTheme(builders: {
-                TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-              })),
+            primarySwatch: Colors.blue,
+            scaffoldBackgroundColor: const Color(0xFF0F0F1E),
+            pageTransitionsTheme: const PageTransitionsTheme(builders: {
+              TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+              TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+            }),
+          ),
           home: BlocBuilder<AuthCubit, AuthState>(
             builder: (context, state) {
               if (state.isLoading) {
@@ -59,31 +63,22 @@ class CryptoApp extends StatelessWidget {
                   ),
                 );
               }
-
-              // Authenticated → Market
               if (state.isAuthenticated && state.token != null) {
-                return BlocProvider(
-                  create: (_) => MarketCubit(
-                    service: nobitexService,
-                    token: state.token!,
-                  )..fetchMarketStats(),
-                  child: BlocBuilder<MarketCubit, MarketState>(
-                    builder: (context, marketState) {
-                      if (marketState.isLoading) {
-                        return Scaffold(
-                          body: Center(
-                            child: Lottie.asset(
-                              JsonAssets.splashCrypto,
-                              width: 150,
-                              height: 150,
-                              fit: BoxFit.contain,
-                            ),
-                          ),
-                        );
-                      }
-                      return const MainScreen();
-                    },
-                  ),
+                return MultiBlocProvider(
+                  providers: [
+                    BlocProvider(
+                      create: (_) => MarketCubit(
+                        service: nobitexService,
+                        token: state.token!,
+                      )..fetchMarketStats(),
+                    ),
+                    BlocProvider(
+                      create: (_) => WalletCubit(
+                        nobitexService
+                      )..fetchWallets(state.token!), 
+                    ),
+                  ],
+                  child: const MainScreen(),
                 );
               }
               return const SplashScreen();
@@ -98,6 +93,7 @@ class CryptoApp extends StatelessWidget {
                   create: (_) => ApiKeyCubit(nobitexService),
                   child: const ApiKeyScreen(),
                 ),
+           
           },
         );
       },

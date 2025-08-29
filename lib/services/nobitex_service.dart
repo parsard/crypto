@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:crypto_app/model/wallet_model.dart';
 import 'package:http/http.dart' as http;
 
 class NobitexService {
@@ -26,8 +27,14 @@ class NobitexService {
   }
 
   Future<Map<String, dynamic>> getWalletList(String token) async {
-    final url = Uri.parse('$baseUrl/users/wallets/list/');
+    final url = Uri.parse('$baseUrl/users/wallets/list');
+    final headers = _tokenHeaders(token);
+    print('🌐 URL: $url');
+    print('📦 Headers: $headers');
     final response = await http.get(url, headers: _tokenHeaders(token));
+
+     print('📥 [Wallet API] Status Code: ${response.statusCode}');
+     print('📄 [Wallet API] Raw Body: ${response.body}');
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
@@ -55,6 +62,12 @@ class NobitexService {
       throw Exception('Failed to fetch market stats: ${response.statusCode} ${response.body}');
     }
   }
+
+  Future<List<Wallet>> getWallets(String token) async {
+  final data = await getWalletList(token); 
+  final walletsJson = data['wallets'] as List<dynamic>;
+  return walletsJson.map((e) => Wallet.fromJson(e)).toList();
+}
 
   Future<Map<String, dynamic>> getOrderBook(String symbol) async {
     final url = Uri.parse('$baseUrl/v2/orderbook/$symbol');
