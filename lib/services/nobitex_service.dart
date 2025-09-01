@@ -50,8 +50,8 @@ class NobitexService {
     }
   }
 
-  Future<Map<String, dynamic>> getWalletList(String token) async {
-    final url = Uri.parse('$baseUrl/users/wallets/list/');
+  Future<Map<String, dynamic>> getWallets(String token) async {
+    final url = Uri.parse('$baseUrl/users/wallets/list');
     final response = await http.get(url, headers: tokenHeaders(token));
     if (response.statusCode == 200) {
       return jsonDecode(response.body);

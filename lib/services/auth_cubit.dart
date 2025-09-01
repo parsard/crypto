@@ -32,24 +32,19 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit({required NobitexService nobitexService})
       : _nobitexService = nobitexService,
         super(AuthState(isLoading: true)) {
-    // Initial state is loading
-    _initializeAuth(); // <--- Call this method immediately upon creation
+    _initializeAuth();
   }
 
-  // New method to handle initial authentication check
   Future<void> _initializeAuth() async {
-    await checkAuth(); // Check stored token on startup
+    await checkAuth();
   }
 
   Future<void> checkAuth() async {
-    emit(state.copyWith(isLoading: true)); // Ensure loading state is set
+    emit(state.copyWith(isLoading: true));
     try {
       final token = await TokenStorage.readToken();
       if (token != null && token.isNotEmpty) {
-        // Option 1: Just set authenticated and token
         emit(state.copyWith(isAuthenticated: true, isLoading: false, token: token, error: null));
-        // Option 2: Potentially validate token with server here if needed
-        // If validation fails, emit isAuthenticated: false and an error.
       } else {
         emit(state.copyWith(isAuthenticated: false, isLoading: false, token: null, error: null));
       }
@@ -82,15 +77,11 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> logout({String? error}) async {
     if (!state.isAuthenticated && error == null) {
-      // If not authenticated and no specific error, no need to do anything
       return;
     }
 
     emit(state.copyWith(isLoading: true));
     try {
-      // Potentially call server-side logout here if implemented in NobitexService
-      // await _nobitexService.logout(state.token!);
-
       await TokenStorage.deleteToken();
       emit(state.copyWith(
         isAuthenticated: false,

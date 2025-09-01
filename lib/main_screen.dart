@@ -1,10 +1,15 @@
 // lib/view/main/main_screen.dart
+import 'package:crypto_app/services/nobitex_service.dart';
 import 'package:crypto_app/services/tab_cubit.dart';
 import 'package:crypto_app/view/market/market_screen.dart';
 import 'package:crypto_app/view/profile/profile_screen.dart';
-import 'package:crypto_app/widgets/custom_google_nav_bar.dart';
+import 'package:crypto_app/view/wallet/logic/wallet_cubit.dart';
+import 'package:crypto_app/view/wallet/wallet_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../services/auth_cubit.dart';
+import '../../widgets/custom_google_nav_bar.dart';
 
 class MainScreen extends StatelessWidget {
   MainScreen({super.key});
@@ -45,9 +50,27 @@ class MainScreen extends StatelessWidget {
               index: selectedIndex,
               children: [
                 _buildNavigator(_navigatorKeys[0], const MarketScreen()),
-                _buildNavigator(_navigatorKeys[1], const PlaceholderScreen(screenName: "Wallets")),
-                _buildNavigator(_navigatorKeys[2], const PlaceholderScreen(screenName: "Trade")),
-                _buildNavigator(_navigatorKeys[3], const ProfileScreenWrapper()),
+                _buildNavigator(
+                  _navigatorKeys[1],
+                  BlocProvider(
+                    create: (context) {
+                      final token = context.read<AuthCubit>().state.token!;
+                      return WalletCubit(
+                        nobitexService: context.read<NobitexService>(),
+                        token: token,
+                      )..fetchWallets();
+                    },
+                    child: const WalletScreen(),
+                  ),
+                ),
+                _buildNavigator(
+                  _navigatorKeys[2],
+                  const PlaceholderScreen(screenName: "Trade"),
+                ),
+                _buildNavigator(
+                  _navigatorKeys[3],
+                  const ProfileScreenWrapper(),
+                ),
               ],
             ),
             bottomNavigationBar: CustomGoogleNavBar(
