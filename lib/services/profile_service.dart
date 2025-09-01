@@ -1,19 +1,18 @@
 import 'dart:convert';
 import 'package:crypto_app/model/user_profile.dart';
+import 'package:crypto_app/services/nobitex_service.dart';
 import 'package:http/http.dart' as http;
 
 class ProfileService {
   final String _baseUrl = 'https://apiv2.nobitex.ir';
-
+  final NobitexService _nobitexService;
+  ProfileService(this._nobitexService);
   Future<UserProfile> fetchUserProfile({required String token}) async {
     final url = Uri.parse('$_baseUrl/users/profile');
 
     try {
-      final response = await http.get(
-        url,
-        headers: {
-          'Authorization': 'Token $token',
-        },
+      final response = await _nobitexService.sendRequest(
+        () => http.get(url, headers: _nobitexService.tokenHeaders(token)),
       );
 
       if (response.statusCode == 200) {

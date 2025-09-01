@@ -1,33 +1,58 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
+typedef LogoutCallback = Future<void> Function({String? error});
 
 class NobitexService {
   final String baseUrl;
+  final LogoutCallback? onUnauthorized;
 
-  NobitexService({this.baseUrl = 'https://apiv2.nobitex.ir'});
+  NobitexService({this.baseUrl = 'https://apiv2.nobitex.ir', this.onUnauthorized});
 
   String cleanToken(String token) {
     return token.trim().replaceAll('\u0000', '');
   }
 
-  Map<String, String> _tokenHeaders(String token) {
+  Map<String, String> tokenHeaders(String token) {
     return {'Authorization': 'Token ${cleanToken(token)}', 'Content-Type': 'application/json'};
+  }
+
+  Future<http.Response> sendRequest(Future<http.Response> Function() requestFunction, {String? token}) async {
+    try {
+      final response = await requestFunction();
+      if (response.statusCode == 401) {
+        debugPrint('Unauthorized access: 401 received. Attempting to log out.');
+        await onUnauthorized?.call(error: 'Your API key is invalid or has expired. Please re-enter.');
+
+        throw Exception('Unauthorized: Token is invalid or expired.');
+      }
+      return response;
+    } on Exception catch (e) {
+      debugPrint('Error in _sendRequest: $e');
+      rethrow;
+    }
   }
 
   // Token Validation
   Future<bool> validateToken(String token) async {
     final url = Uri.parse('$baseUrl/users/profile');
     try {
-      final response = await http.get(url, headers: _tokenHeaders(token));
+      final response = await sendRequest(
+        () => http.get(url, headers: tokenHeaders(token)),
+      );
       return response.statusCode == 200;
-    } catch (e) {
+    } on Exception catch (e) {
+      if (e.toString().contains('Unauthorized')) {
+        return false;
+      }
       rethrow;
     }
   }
 
   Future<Map<String, dynamic>> getWalletList(String token) async {
     final url = Uri.parse('$baseUrl/users/wallets/list/');
-    final response = await http.get(url, headers: _tokenHeaders(token));
+    final response = await http.get(url, headers: tokenHeaders(token));
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
@@ -45,7 +70,7 @@ class NobitexService {
 
     final response = await http.post(
       url,
-      headers: _tokenHeaders(token),
+      headers: tokenHeaders(token),
       body: jsonEncode(bodyMap),
     );
 
@@ -82,7 +107,7 @@ class NobitexService {
 
   Future<void> logout(String token) async {
     final url = Uri.parse('$baseUrl/auth/logout/');
-    final response = await http.post(url, headers: _tokenHeaders(token));
+    final response = await http.post(url, headers: tokenHeaders(token));
     if (response.statusCode != 200 && response.statusCode != 401) {
       throw Exception('Failed to logout: ${response.statusCode} ${response.body}');
     }

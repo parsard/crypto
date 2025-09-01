@@ -2,6 +2,7 @@
 
 import 'package:crypto_app/core/animations.dart';
 import 'package:crypto_app/services/auth_cubit.dart';
+import 'package:crypto_app/services/nobitex_service.dart';
 import 'package:crypto_app/services/profile_service.dart';
 import 'package:crypto_app/view/profile/widget/profile_widgets.dart';
 import 'package:crypto_app/view/splash/splash_screen.dart';
@@ -23,10 +24,11 @@ class ProfileScreenWrapper extends StatelessWidget {
     if (!authState.isAuthenticated || authState.token == null) {
       return SplashScreen();
     }
+    final nobitexService = context.read<NobitexService>();
 
     return BlocProvider(
       create: (context) => ProfileCubit(
-        profileService: ProfileService(),
+        profileService: ProfileService(nobitexService),
         token: authState.token!,
       )..fetchProfile(),
       child: const ProfileScreen(),

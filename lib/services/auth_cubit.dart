@@ -11,12 +11,17 @@ class AuthState {
 
   AuthState({this.isLoading = true, this.isAuthenticated = false, this.token, this.error});
 
-  AuthState copyWith({bool? isLoading, bool? isAuthenticated, String? token}) {
+  AuthState copyWith({
+    bool? isLoading,
+    bool? isAuthenticated,
+    String? token,
+    String? error,
+  }) {
     return AuthState(
       isLoading: isLoading ?? this.isLoading,
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
       token: token ?? this.token,
-      error: error ?? error,
+      error: error,
     );
   }
 }
@@ -26,39 +31,86 @@ class AuthCubit extends Cubit<AuthState> {
 
   AuthCubit({required NobitexService nobitexService})
       : _nobitexService = nobitexService,
-        super(AuthState(isLoading: true));
+        super(AuthState(isLoading: true)) {
+    // Initial state is loading
+    _initializeAuth(); // <--- Call this method immediately upon creation
+  }
+
+  // New method to handle initial authentication check
+  Future<void> _initializeAuth() async {
+    await checkAuth(); // Check stored token on startup
+  }
 
   Future<void> checkAuth() async {
-    emit(state.copyWith(isLoading: true));
-    final token = await TokenStorage.readToken();
-    if (token != null && token.isNotEmpty) {
-      emit(AuthState(isAuthenticated: true, isLoading: false, token: token));
-    } else {
-      emit(AuthState(isAuthenticated: false, isLoading: false));
-    }
-  }
-
-  Future<void> login(String token) async {
-    emit(state.copyWith(isLoading: true));
-    await TokenStorage.saveToken(token);
-    emit(AuthState(isAuthenticated: true, isLoading: false, token: token));
-  }
-
-  Future<void> logout() async {
-    if (!state.isAuthenticated || state.token == null) return;
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(isLoading: true)); // Ensure loading state is set
     try {
-      await _nobitexService.logout(state.token!);
-      await TokenStorage.deleteToken();
-      emit(AuthState(isAuthenticated: false, isLoading: false, token: null));
+      final token = await TokenStorage.readToken();
+      if (token != null && token.isNotEmpty) {
+        // Option 1: Just set authenticated and token
+        emit(state.copyWith(isAuthenticated: true, isLoading: false, token: token, error: null));
+        // Option 2: Potentially validate token with server here if needed
+        // If validation fails, emit isAuthenticated: false and an error.
+      } else {
+        emit(state.copyWith(isAuthenticated: false, isLoading: false, token: null, error: null));
+      }
     } catch (e) {
-      debugPrint('An error occurred during logout process: $e');
-      await TokenStorage.deleteToken(); // اطمینان از پاک شدن توکن محلی
-      emit(AuthState(
+      debugPrint('Error during initial auth check: $e');
+      emit(state.copyWith(
           isAuthenticated: false,
           isLoading: false,
           token: null,
-          error: 'Logout failed on server, but you have been logged out locally.'));
+          error: 'Failed to check authentication status. Please try logging in again.'));
     }
+  }
+
+  Future<void> loginFromStorage() async {
+    emit(state.copyWith(isLoading: true));
+    try {
+      final token = await TokenStorage.readToken();
+      if (token != null && token.isNotEmpty) {
+        emit(state.copyWith(isAuthenticated: true, isLoading: false, token: token, error: null));
+      } else {
+        emit(state.copyWith(
+            isAuthenticated: false, isLoading: false, token: null, error: 'No token found after login attempt.'));
+      }
+    } catch (e) {
+      debugPrint('Error during loginFromStorage: $e');
+      emit(state.copyWith(
+          isAuthenticated: false, isLoading: false, token: null, error: 'Failed to load token from storage.'));
+    }
+  }
+
+  Future<void> logout({String? error}) async {
+    if (!state.isAuthenticated && error == null) {
+      // If not authenticated and no specific error, no need to do anything
+      return;
+    }
+
+    emit(state.copyWith(isLoading: true));
+    try {
+      // Potentially call server-side logout here if implemented in NobitexService
+      // await _nobitexService.logout(state.token!);
+
+      await TokenStorage.deleteToken();
+      emit(state.copyWith(
+        isAuthenticated: false,
+        isLoading: false,
+        token: null,
+        error: error,
+      ));
+    } catch (e) {
+      debugPrint('An error occurred during logout process: $e');
+      await TokenStorage.deleteToken();
+      emit(state.copyWith(
+        isAuthenticated: false,
+        isLoading: false,
+        token: null,
+        error: error ?? 'Logout failed locally.',
+      ));
+    }
+  }
+
+  void clearError() {
+    emit(state.copyWith(error: null));
   }
 }
