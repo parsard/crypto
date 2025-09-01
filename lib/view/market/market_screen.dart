@@ -48,7 +48,6 @@ class _MarketScreenState extends State<MarketScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// --- Header ---
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
                     child: Row(
@@ -71,19 +70,19 @@ class _MarketScreenState extends State<MarketScreen> {
                                 context.read<MarketCubit>().fetchMarketStats();
                               },
                             ),
-                            IconButton(
-                              icon: const CircleAvatar(
-                                backgroundColor: Colors.grey,
-                                child: Icon(Icons.person, color: Colors.white),
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) => const ProfileScreenWrapper(),
-                                  ),
-                                );
-                              },
-                            ),
+                            // IconButton(
+                            //   icon: const CircleAvatar(
+                            //     backgroundColor: Colors.grey,
+                            //     child: Icon(Icons.person, color: Colors.white),
+                            //   ),
+                            //   onPressed: () {
+                            //     Navigator.of(context).push(
+                            //       MaterialPageRoute(
+                            //         builder: (_) => const ProfileScreenWrapper(),
+                            //       ),
+                            //     );
+                            //   },
+                            // ),
                           ],
                         ),
                       ],

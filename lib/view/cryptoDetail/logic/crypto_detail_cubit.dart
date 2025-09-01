@@ -31,7 +31,7 @@ class CryptoDetailCubit extends Cubit<CryptoDetailState> {
 
         if (data['status'] != 'ok') {
           print("⚠️ Invalid server response");
-          return; // UI رو عوض نمیکنیم
+          return;
         }
 
         emit(state.copyWith(
@@ -51,7 +51,7 @@ class CryptoDetailCubit extends Cubit<CryptoDetailState> {
     } catch (e) {
       print("❌ Fetch error: $e");
     } finally {
-      _isFetching = false; // آزاد کردن برای درخواست بعدی
+      _isFetching = false;
     }
   }
 

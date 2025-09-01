@@ -50,9 +50,7 @@ class MarketCubit extends Cubit<MarketState> {
         final double price = double.tryParse(entry.value['bestSell'].toString()) ?? 0.0;
         final double change = double.tryParse(entry.value['dayChange'].toString()) ?? 0.0;
         List<double> history = [];
-        try {
-          // history = await service.getPriceHistory(symbol: baseSymbol);
-        } catch (e) {
+        try {} catch (e) {
           print("⚠️ Failed to fetch history for $baseSymbol: $e");
         }
 

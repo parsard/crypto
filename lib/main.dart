@@ -2,6 +2,7 @@ import 'package:crypto_app/main_screen.dart';
 import 'package:crypto_app/services/auth_cubit.dart';
 import 'package:crypto_app/services/nobitex_service.dart';
 import 'package:crypto_app/services/profile_service.dart';
+import 'package:crypto_app/services/tab_cubit.dart';
 import 'package:crypto_app/view/apiKey/api_key_screen.dart';
 import 'package:crypto_app/view/apiKey/logic/api_key_cubit.dart';
 import 'package:crypto_app/view/market/logic/market_cubit.dart';
@@ -37,6 +38,7 @@ class CryptoApp extends StatelessWidget {
       builder: (context, child) {
         return MultiProvider(
           providers: [
+            BlocProvider(create: (_) => TabCubit()),
             Provider<NobitexService>(
               create: (context) {
                 final authCubit = context.read<AuthCubit>();
@@ -112,7 +114,7 @@ class CryptoApp extends StatelessWidget {
                             ),
                           );
                         }
-                        return const MainScreen();
+                        return MainScreen();
                       },
                     ),
                   );
@@ -128,7 +130,7 @@ class CryptoApp extends StatelessWidget {
                       service: context.read<NobitexService>(),
                       token: context.read<AuthCubit>().state.token!,
                     )..fetchMarketStats(),
-                    child: const MainScreen(),
+                    child: MainScreen(),
                   ),
             },
           ),

@@ -4,6 +4,7 @@ import 'package:crypto_app/core/animations.dart';
 import 'package:crypto_app/services/auth_cubit.dart';
 import 'package:crypto_app/services/nobitex_service.dart';
 import 'package:crypto_app/services/profile_service.dart';
+import 'package:crypto_app/services/tab_cubit.dart';
 import 'package:crypto_app/view/profile/widget/profile_widgets.dart';
 import 'package:crypto_app/view/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,8 @@ import 'package:lottie/lottie.dart';
 
 import 'logic/profile_cubit.dart';
 import 'logic/profile_state.dart';
+
+final GlobalKey<NavigatorState> profileTabNavKey = GlobalKey<NavigatorState>();
 
 class ProfileScreenWrapper extends StatelessWidget {
   const ProfileScreenWrapper({super.key});
@@ -70,7 +73,7 @@ class ProfileScreen extends StatelessWidget {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 24),
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: () => context.read<TabCubit>().changeTab(0),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                     ),
