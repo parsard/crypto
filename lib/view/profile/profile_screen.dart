@@ -43,18 +43,24 @@ class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   void _showLogoutConfirmationSheet(BuildContext context) async {
-    final bool? shouldLogout = await showModalBottomSheet<bool>(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (BuildContext sheetContext) {
-        return LogoutConfirmationSheet();
-      },
-    );
+  final bool? shouldLogout = await showModalBottomSheet<bool>(
+    context: context,
+    backgroundColor: Colors.transparent,
+    builder: (BuildContext sheetContext) {
+      return LogoutConfirmationSheet();
+    },
+  );
 
-    if (shouldLogout == true && context.mounted) {
-      context.read<AuthCubit>().logout();
-    }
+  if (shouldLogout == true && context.mounted) {
+    await context.read<AuthCubit>().logout();
+
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      '/splash', 
+      (Route<dynamic> route) => false,
+    );
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

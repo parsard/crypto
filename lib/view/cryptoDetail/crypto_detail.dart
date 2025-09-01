@@ -33,7 +33,6 @@ class _CryptoDetailScreenState extends State<CryptoDetailScreen> {
         body: SafeArea(
           child: Column(
             children: [
-              /// --- Minimal Header ---
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 16.h),
                 child: Row(

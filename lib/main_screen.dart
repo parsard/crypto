@@ -63,12 +63,12 @@ class MainScreen extends StatelessWidget {
                     child: const WalletScreen(),
                   ),
                 ),
+                // _buildNavigator(
+                //   _navigatorKeys[2],
+                //   const PlaceholderScreen(screenName: "Trade"),
+                // ),
                 _buildNavigator(
                   _navigatorKeys[2],
-                  const PlaceholderScreen(screenName: "Trade"),
-                ),
-                _buildNavigator(
-                  _navigatorKeys[3],
                   const ProfileScreenWrapper(),
                 ),
               ],

@@ -48,10 +48,10 @@ class CustomGoogleNavBar extends StatelessWidget {
                 icon: Icons.account_balance_wallet_outlined,
                 text: 'Wallets',
               ),
-              GButton(
-                icon: Icons.swap_horiz_rounded,
-                text: 'Trade',
-              ),
+              // GButton(
+              //   icon: Icons.swap_horiz_rounded,
+              //   text: 'Trade',
+              // ),
               GButton(
                 icon: Icons.person_outline,
                 text: 'Profile',
